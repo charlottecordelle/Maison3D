@@ -1,0 +1,13 @@
+header {
+    font-family: 'Times New Roman', Times, serif;
+    margin-top: 2%;
+    padding-left: 3%;
+}
+
+canvas {
+    height: 800px;
+    width: 70%;
+    display: block;
+    margin: 0;
+    padding: 0;
+}
