@@ -1,9 +1,8 @@
-import { Component, ElementRef, ViewChild, OnInit, AfterViewInit, provideExperimentalZonelessChangeDetection } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 import { CSG } from 'three-csg-ts';
-import { producerUpdatesAllowed, producerUpdateValueVersion } from '@angular/core/primitives/signals';
 
 @Component({
   selector: 'app-root',
@@ -128,7 +127,7 @@ export class AppComponent implements AfterViewInit {
     const largeurplan = 6;
 
     const solGeo = new THREE.BoxGeometry(largeursol, epaisseur, longueursol)
-    const solMaterial = new THREE.MeshBasicMaterial({ color: 'beige'});
+    const solMaterial = new THREE.MeshBasicMaterial({ color: '#7f4f24'});
     const sol = new THREE.Mesh(solGeo, solMaterial);
     sol.position.set(0, 0, 0)
     scene.add(sol)
@@ -136,7 +135,7 @@ export class AppComponent implements AfterViewInit {
     const plancherGeo = new THREE.BoxGeometry(largeurplan, epaisseur, longueursol);
     const plancherMaterial = new THREE.MeshBasicMaterial({ color: '#1b263b'});
     const plancher = new THREE.Mesh(plancherGeo, plancherMaterial);
-    plancher.position.set(0, 2.5, 0);//1.35
+    plancher.position.set(0, 2.5, 0);
     scene.add(plancher)
 
     const renderer = new THREE.WebGLRenderer({ canvas: this.myCanva.nativeElement, antialias: true });
@@ -144,6 +143,16 @@ export class AppComponent implements AfterViewInit {
 
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight('0xffffff, 1');
+    directionalLight.position.set(10, 20, 10);
+    directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 2048;
+    directionalLight.shadow.mapSize.height = 2048;
+    scene.add(directionalLight);
 
     const animate = () => {
       requestAnimationFrame(animate);
