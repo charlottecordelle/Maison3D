@@ -2,6 +2,7 @@ header {
     font-family: 'Times New Roman', Times, serif;
     margin-top: 2%;
     padding-left: 3%;
+    background-color: beige;
 }
 
 canvas {
@@ -10,4 +11,9 @@ canvas {
     display: block;
     margin: 0;
     padding: 0;
+}
+
+body {
+    text-align: right;
+    margin: 7%;
 }
