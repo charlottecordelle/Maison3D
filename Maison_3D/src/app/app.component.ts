@@ -15,34 +15,39 @@ export class AppComponent implements AfterViewInit {
   @ViewChild('myCanva', { static: true }) myCanva!: ElementRef<HTMLCanvasElement>;
 
   ngAfterViewInit() {
+    //création de la scène et ajout d'un repère
     const scene = new THREE.Scene();
     scene.background = new THREE.Color('#c7def2');
     const axesHelper = new THREE.AxesHelper(20);
     scene.add(axesHelper)
 
+    //récupération du canva dans HTML
     const canvas = this.myCanva.nativeElement;
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
 
+    //création de la camera
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     camera.position.set(10, 10, 10);
     camera.lookAt(0, 0, 0);
 
+    //lumières
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight('0xffffff, 1');
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     directionalLight.position.set(10, 20, 10);
     directionalLight.castShadow = true;
     directionalLight.shadow.mapSize.width = 2048;
     directionalLight.shadow.mapSize.height = 2048;
     scene.add(directionalLight);
 
+    //création d'un groupe pour les murs et fenêtres
     const houseGroup = new THREE.Group();
     houseGroup.rotation.y = Math.PI / 2;
     scene.add(houseGroup)
 
-    //murs etc
+    //données murs & fenêtres
     const largeur = 0.2;
     const longueur1 = 8;
     const longueur2 = 5
@@ -52,12 +57,13 @@ export class AppComponent implements AfterViewInit {
     const fenlongueur = 1.2;
     const fenepaisseur = 0.05;
 
+    //création de trous dans les murs pour les combler à l'aide des fenêtres et de la porte
     const trou1Geo = new THREE.BoxGeometry(fenlargeur, fenlongueur, largeur);
     const trou1 = new THREE.Mesh(trou1Geo);
     trou1.position.set(0, hauteur/2, 2.5)
 
     const mur1Geo = new THREE.BoxGeometry(longueur1, hauteur, largeur);
-    const mur1Material = new THREE.MeshBasicMaterial({ color: 'gray' });
+    const mur1Material = new THREE.MeshStandardMaterial({ color: '#939597' });
     const mur1 = new THREE.Mesh(mur1Geo, mur1Material);
     mur1.position.set(0, hauteur/2, 2.5);
 
@@ -84,7 +90,7 @@ export class AppComponent implements AfterViewInit {
     trou2.position.set(-3.9, hauteur/2, 0);
 
     const mur2Geo = new THREE.BoxGeometry(largeur, hauteur, longueur2);
-    const mur2Material = new THREE.MeshBasicMaterial({ color: 'gray' })
+    const mur2Material = new THREE.MeshStandardMaterial({ color: '#939597' })
     const mur2 = new THREE.Mesh(mur2Geo, mur2Material);
     mur2.position.set(-3.9, hauteur/2, 0);
 
@@ -107,7 +113,7 @@ export class AppComponent implements AfterViewInit {
     trou3.position.set(0, hauteur/2, -2.5);
 
     const mur3Geo = new THREE.BoxGeometry(longueur1, hauteur, largeur);
-    const mur3Material = new THREE.MeshBasicMaterial({ color: 'gray' });
+    const mur3Material = new THREE.MeshStandardMaterial({ color: '#939597' });
     const mur3 = new THREE.Mesh(mur3Geo, mur3Material);
     mur3.position.set(0, hauteur/2, -2.5);
 
@@ -126,11 +132,12 @@ export class AppComponent implements AfterViewInit {
     houseGroup.add(fen2)
 
     const mur4Geo = new THREE.BoxGeometry(largeur, hauteur, longueur2);
-    const mur4Material = new THREE.MeshBasicMaterial({ color:'gray' });
+    const mur4Material = new THREE.MeshStandardMaterial({ color:'#939597' });
     const mur4 = new THREE.Mesh(mur4Geo, mur4Material);
     mur4.position.set(3.9, hauteur/2, 0);
     houseGroup.add(mur4)
 
+    //données sol & plancher + création
     const largeursol = 5;
     const longueursol = 8;
     const epaisseur = 0.20;
@@ -148,12 +155,17 @@ export class AppComponent implements AfterViewInit {
     plancher.position.set(0, 2.5, 0);
     scene.add(plancher)
 
+    //paramètres du rendu
     const renderer = new THREE.WebGLRenderer({ canvas: this.myCanva.nativeElement, antialias: true });
     renderer.setSize(width, height);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+    //contrôles de la scène
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
 
+    //réinitialiser la position de la caméra à l'aide d'un bouton
     function resetcamera() {
       camera.position.set(10, 10, 10);
       controls.target.set(0, 0, 0);
@@ -164,6 +176,7 @@ export class AppComponent implements AfterViewInit {
       resetcamera();
     });
 
+    //animer le rendu
     const animate = () => {
       requestAnimationFrame(animate);
       controls.update();
