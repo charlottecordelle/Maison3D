@@ -28,11 +28,21 @@ export class AppComponent implements AfterViewInit {
     camera.position.set(10, 10, 10);
     camera.lookAt(0, 0, 0);
 
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight('0xffffff, 1');
+    directionalLight.position.set(10, 20, 10);
+    directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 2048;
+    directionalLight.shadow.mapSize.height = 2048;
+    scene.add(directionalLight);
+
     const houseGroup = new THREE.Group();
     houseGroup.rotation.y = Math.PI / 2;
     scene.add(houseGroup)
 
-    //murs
+    //murs etc
     const largeur = 0.2;
     const longueur1 = 8;
     const longueur2 = 5
@@ -144,15 +154,15 @@ export class AppComponent implements AfterViewInit {
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambientLight);
+    function resetcamera() {
+      camera.position.set(10, 10, 10);
+      controls.target.set(0, 0, 0);
+      controls.update();
+    }
 
-    const directionalLight = new THREE.DirectionalLight('0xffffff, 1');
-    directionalLight.position.set(10, 20, 10);
-    directionalLight.castShadow = true;
-    directionalLight.shadow.mapSize.width = 2048;
-    directionalLight.shadow.mapSize.height = 2048;
-    scene.add(directionalLight);
+    document.getElementById("resetcamera")!.addEventListener("click", () => {
+      resetcamera();
+    });
 
     const animate = () => {
       requestAnimationFrame(animate);

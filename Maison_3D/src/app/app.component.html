@@ -1,11 +1,26 @@
 <!DOCTYPE html>
   <html lang="en">
-    <header>
-      <h1>Modélisation 3D</h1>
-    </header>
-    <canvas #myCanva> <input type="reset" value="Reset"></canvas>
+    <head>
+      <meta charset="UTF-8">
+      <title>Maison 3D</title>
+    </head>
     <body>
-      <h1>Légende</h1>
+      <header>
+        <h1>Modélisation 3D</h1>
+      </header>
+      <main>
+        <canvas #myCanva></canvas>
+        <aside>
+          <h1>Légende</h1>
+          <button id="resetcamera">Réinitialiser</button>
+          <h2>Cliquez ici pour réinitialiser votre position !</h2>
+          <p><span class="carre gris"></span> Murs </p>
+          <p><span class="carre marron"></span> Sol </p>
+          <p><span class="carre bleu"></span> Plancher </p>
+          <p><span class="carre vert"></span> Porte </p>
+          <p><span class="carre rouge"></span> Fenêtres </p>
+        </aside>
+      </main>
     </body>
   </html>
 
