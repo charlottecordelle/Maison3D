@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 import { CSG } from 'three-csg-ts';
+import { objets } from './maisondonnees';
 
 @Component({
   selector: 'app-root',
@@ -47,25 +48,17 @@ export class AppComponent implements AfterViewInit {
     houseGroup.rotation.y = Math.PI / 2;
     scene.add(houseGroup)
 
-    //données murs & fenêtres
-    const largeur = 0.2;
-    const longueur1 = 8;
-    const longueur2 = 5
-    const hauteur = 2.5;
-
-    const fenlargeur = 1.5;
-    const fenlongueur = 1.2;
-    const fenepaisseur = 0.05;
-
     //création de trous dans les murs pour les combler à l'aide des fenêtres et de la porte
-    const trou1Geo = new THREE.BoxGeometry(fenlargeur, fenlongueur, largeur);
-    const trou1 = new THREE.Mesh(trou1Geo);
-    trou1.position.set(0, hauteur/2, 2.5)
+    const objetData = objets[0]
 
-    const mur1Geo = new THREE.BoxGeometry(longueur1, hauteur, largeur);
-    const mur1Material = new THREE.MeshStandardMaterial({ color: '#939597' });
+    const trou1Geo = new THREE.BoxGeometry(objetData.fenlargeur, objetData.fenlongueur, objetData.largeur);
+    const trou1 = new THREE.Mesh(trou1Geo);
+    trou1.position.set(objetData.mur1X, objetData.mur1Y, objetData.mur1Z)
+
+    const mur1Geo = new THREE.BoxGeometry(objetData.longueur1, objetData.hauteur, objetData.largeur);
+    const mur1Material = new THREE.MeshStandardMaterial({ color: objetData.colormur });
     const mur1 = new THREE.Mesh(mur1Geo, mur1Material);
-    mur1.position.set(0, hauteur/2, 2.5);
+    mur1.position.set(objetData.mur1X, objetData.mur1Y, objetData.mur1Z);
 
     const mur1CSG = CSG.fromMesh(mur1);
     const trou1CSG = CSG.fromMesh(trou1);
@@ -74,25 +67,22 @@ export class AppComponent implements AfterViewInit {
     murtrou1.position.copy(mur1.position);
     houseGroup.add(murtrou1)
 
-    const fen1Geo = new THREE.BoxGeometry(fenlargeur, fenlongueur, fenepaisseur);
-    const fen1Material = new THREE.MeshBasicMaterial({ color: '#ae2012'});
+    const fen1Geo = new THREE.BoxGeometry(objetData.fenlargeur, objetData.fenlongueur, objetData.fenepaisseur);
+    const fen1Material = new THREE.MeshBasicMaterial({ color: objetData.colorfen});
     const fen1 = new THREE.Mesh(fen1Geo, fen1Material);
 
     fen1.position.copy(trou1.position);
     houseGroup.add(fen1)
 
-    const portelargeur = 1;
-    const portehauteur = 2.1;
-    const portepaisseur = 0.05;
-
-    const trou2Geo = new THREE.BoxGeometry(largeur, portehauteur, portelargeur);
+    //porte & mur2
+    const trou2Geo = new THREE.BoxGeometry(objetData.largeur, objetData.portehauteur, objetData.portelargeur);
     const trou2 = new THREE.Mesh(trou2Geo);
-    trou2.position.set(-3.9, hauteur/2, 0);
+    trou2.position.set(objetData.mur2X, objetData.mur2Y, objetData.mur2Z);
 
-    const mur2Geo = new THREE.BoxGeometry(largeur, hauteur, longueur2);
-    const mur2Material = new THREE.MeshStandardMaterial({ color: '#939597' })
+    const mur2Geo = new THREE.BoxGeometry(objetData.largeur, objetData.hauteur, objetData.longueur2);
+    const mur2Material = new THREE.MeshStandardMaterial({ color: objetData.colormur })
     const mur2 = new THREE.Mesh(mur2Geo, mur2Material);
-    mur2.position.set(-3.9, hauteur/2, 0);
+    mur2.position.set(objetData.mur2X, objetData.mur1Y, objetData.mur2Z);
 
     const mur2CSG = CSG.fromMesh(mur2);
     const trou2CSG = CSG.fromMesh(trou2);
@@ -101,21 +91,22 @@ export class AppComponent implements AfterViewInit {
     murtrou2.position.copy(mur2.position);
     houseGroup.add(murtrou2)
 
-    const porteGeo = new THREE.BoxGeometry(portepaisseur, portehauteur, portelargeur);
-    const porteMaterial = new THREE.MeshBasicMaterial({ color: '#386641'});
+    const porteGeo = new THREE.BoxGeometry(objetData.portepaisseur, objetData.portehauteur, objetData.portelargeur);
+    const porteMaterial = new THREE.MeshBasicMaterial({ color: objetData.colorporte});
     const porte = new THREE.Mesh(porteGeo, porteMaterial);
 
     porte.position.copy(trou2.position);
     houseGroup.add(porte)
 
-    const trou3Geo = new THREE.BoxGeometry(fenlargeur, fenlongueur, largeur);
+    //fenetre2 & mur3
+    const trou3Geo = new THREE.BoxGeometry(objetData.fenlargeur, objetData.fenlongueur, objetData.largeur);
     const trou3 = new THREE.Mesh(trou3Geo);
-    trou3.position.set(0, hauteur/2, -2.5);
+    trou3.position.set(objetData.mur3X, objetData.mur3Y, objetData.mur3Z);
 
-    const mur3Geo = new THREE.BoxGeometry(longueur1, hauteur, largeur);
-    const mur3Material = new THREE.MeshStandardMaterial({ color: '#939597' });
+    const mur3Geo = new THREE.BoxGeometry(objetData.longueur1, objetData.hauteur, objetData.largeur);
+    const mur3Material = new THREE.MeshStandardMaterial({ color: objetData.colormur });
     const mur3 = new THREE.Mesh(mur3Geo, mur3Material);
-    mur3.position.set(0, hauteur/2, -2.5);
+    mur3.position.set(objetData.mur3X, objetData.mur3Y, objetData.mur3Z);
 
     const mur3CSG = CSG.fromMesh(mur3);
     const trou3CSG = CSG.fromMesh(trou3);
@@ -124,35 +115,31 @@ export class AppComponent implements AfterViewInit {
     murtrou3.position.copy(mur3.position);
     houseGroup.add(murtrou3)
 
-    const fen2Geo = new THREE.BoxGeometry(fenlargeur, fenlongueur, fenepaisseur);
-    const fen2Material = new THREE.MeshBasicMaterial({ color: '#ae2012'});
+    const fen2Geo = new THREE.BoxGeometry(objetData.fenlargeur, objetData.fenlongueur, objetData.fenepaisseur);
+    const fen2Material = new THREE.MeshBasicMaterial({ color: objetData.colorfen});
     const fen2 = new THREE.Mesh(fen2Geo, fen2Material);
 
     fen2.position.copy(trou3.position);
     houseGroup.add(fen2)
 
-    const mur4Geo = new THREE.BoxGeometry(largeur, hauteur, longueur2);
-    const mur4Material = new THREE.MeshStandardMaterial({ color:'#939597' });
+    //dernier mur
+    const mur4Geo = new THREE.BoxGeometry(objetData.largeur, objetData.hauteur, objetData.longueur2);
+    const mur4Material = new THREE.MeshStandardMaterial({ color: objetData.colormur });
     const mur4 = new THREE.Mesh(mur4Geo, mur4Material);
-    mur4.position.set(3.9, hauteur/2, 0);
+    mur4.position.set(objetData.mur4X, objetData.mur4Y, objetData.mur4Z);
     houseGroup.add(mur4)
 
-    //données sol & plancher + création
-    const largeursol = 5;
-    const longueursol = 8;
-    const epaisseur = 0.20;
-    const largeurplan = 6;
-
-    const solGeo = new THREE.BoxGeometry(largeursol, epaisseur, longueursol)
-    const solMaterial = new THREE.MeshBasicMaterial({ color: '#7f4f24'});
+    //création sol & plancher
+    const solGeo = new THREE.BoxGeometry(objetData.largeursol, objetData.epaisseur, objetData.longueursol)
+    const solMaterial = new THREE.MeshBasicMaterial({ color: objetData.colorsol});
     const sol = new THREE.Mesh(solGeo, solMaterial);
-    sol.position.set(0, 0, 0)
+    sol.position.set(objetData.solX, objetData.solY, objetData.solZ)
     scene.add(sol)
 
-    const plancherGeo = new THREE.BoxGeometry(largeurplan, epaisseur, longueursol);
-    const plancherMaterial = new THREE.MeshBasicMaterial({ color: '#1b263b'});
+    const plancherGeo = new THREE.BoxGeometry(objetData.largeurplan, objetData.epaisseur, objetData.longueursol);
+    const plancherMaterial = new THREE.MeshBasicMaterial({ color: objetData.colorplan});
     const plancher = new THREE.Mesh(plancherGeo, plancherMaterial);
-    plancher.position.set(0, 2.5, 0);
+    plancher.position.set(objetData.planX, objetData.planY, objetData.planZ!);
     scene.add(plancher)
 
     //paramètres du rendu
