@@ -8,7 +8,7 @@ import * as THREE from 'three';
             const plancherMaterial = new THREE.MeshBasicMaterial({ color: objetData.colorplan});
             const plancher = new THREE.Mesh(plancherGeo, plancherMaterial);
             plancher.position.set(objetData.planX, objetData.planY, objetData.planZ!);
+            
             return plancher;
-            ///test
         }
     }

@@ -5,6 +5,8 @@ import { OrbitControls } from 'three/examples/jsm/Addons.js';
 import { objets } from './maisondonnees';
 import { murService } from './services/murs.service';
 import { planService } from './services/plancher.service';
+import { solService } from './services/sol.service';
+import { sceneService } from './services/scene.service';
 
 @Component({
   selector: 'app-root',
@@ -19,35 +21,19 @@ export class AppComponent implements AfterViewInit {
   constructor(
     private murService: murService,
     private planService: planService,
+    private solService: solService,
+    private sceneService: sceneService,
   ) {}
 
   ngAfterViewInit() {
-    //création de la scène et ajout d'un repère
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color('#c7def2');
-    const axesHelper = new THREE.AxesHelper(20);
-    scene.add(axesHelper)
-
     //récupération du canva dans HTML
     const canvas = this.myCanva.nativeElement;
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
 
-    //création de la camera
-    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    camera.position.set(10, 10, 10);
-    camera.lookAt(0, 0, 0);
-
-    //lumières
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(10, 20, 10);
-    directionalLight.castShadow = true;
-    directionalLight.shadow.mapSize.width = 2048;
-    directionalLight.shadow.mapSize.height = 2048;
-    scene.add(directionalLight);
+    //récupération de la scène et de la caméra
+    const scene = this.sceneService.getScene();
+    const camera = this.sceneService.getCamera();
 
     //ajout des murs à l'aide du murService
     const objetData = objets[0];
@@ -97,10 +83,7 @@ export class AppComponent implements AfterViewInit {
     scene.add(plancher)
 
     //création sol & plancher
-    const solGeo = new THREE.BoxGeometry(objetData.largeursol, objetData.epaisseur, objetData.longueursol)
-    const solMaterial = new THREE.MeshBasicMaterial({ color: objetData.colorsol});
-    const sol = new THREE.Mesh(solGeo, solMaterial);
-    sol.position.set(objetData.solX, objetData.solY, objetData.solZ)
+    const sol = this.solService.sol(objetData);
     scene.add(sol)
 
     //paramètres du rendu
