@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 import { objets } from './maisondonnees';
 import { murService } from './services/murs.service';
+import { planService } from './services/plancher.service';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +16,10 @@ import { murService } from './services/murs.service';
 export class AppComponent implements AfterViewInit {
   @ViewChild('myCanva', { static: true }) myCanva!: ElementRef<HTMLCanvasElement>;
 
-  constructor(private murService: murService) {}
+  constructor(
+    private murService: murService,
+    private planService: planService,
+  ) {}
 
   ngAfterViewInit() {
     //création de la scène et ajout d'un repère
@@ -88,18 +92,16 @@ export class AppComponent implements AfterViewInit {
     this.murService.mur(mur4Data);
     scene.add(this.murService.gethouseGroup());
 
+    //plancher
+    const plancher = this.planService.plancher(objetData);
+    scene.add(plancher)
+
     //création sol & plancher
     const solGeo = new THREE.BoxGeometry(objetData.largeursol, objetData.epaisseur, objetData.longueursol)
     const solMaterial = new THREE.MeshBasicMaterial({ color: objetData.colorsol});
     const sol = new THREE.Mesh(solGeo, solMaterial);
     sol.position.set(objetData.solX, objetData.solY, objetData.solZ)
     scene.add(sol)
-
-    const plancherGeo = new THREE.BoxGeometry(objetData.largeurplan, objetData.epaisseur, objetData.longueursol);
-    const plancherMaterial = new THREE.MeshBasicMaterial({ color: objetData.colorplan});
-    const plancher = new THREE.Mesh(plancherGeo, plancherMaterial);
-    plancher.position.set(objetData.planX, objetData.planY, objetData.planZ!);
-    scene.add(plancher)
 
     //paramètres du rendu
     const renderer = new THREE.WebGLRenderer({ canvas: this.myCanva.nativeElement, antialias: true });
