@@ -14,7 +14,7 @@ export class murService {
         this.houseGroup.rotation.y = Math.PI / 2;
     }
 
-    //Récupération du groupe plus facilement
+    //Fonction pour récupérer le groupe
     gethouseGroup(): THREE.Group {
         return this.houseGroup;
     }
