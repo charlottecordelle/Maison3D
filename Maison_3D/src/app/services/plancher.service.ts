@@ -3,11 +3,12 @@ import * as THREE from 'three';
 
 @Injectable({ providedIn: "root"})
     export class planService {
-        plancher(objetData: any): THREE.Mesh {
-            const plancherGeo = new THREE.BoxGeometry(objetData.largeurplan, objetData.epaisseur, objetData.longueursol);
-            const plancherMaterial = new THREE.MeshBasicMaterial({ color: objetData.colorplan});
+        plancher(maisonData: any): THREE.Mesh {
+            const plancherGeo = new THREE.BoxGeometry(maisonData.plancher.largeurPlan, 
+                maisonData.plancher.epaisseur, maisonData.plancher.longueurSol);
+            const plancherMaterial = new THREE.MeshBasicMaterial({ color: maisonData.plancher.colorPlan});
             const plancher = new THREE.Mesh(plancherGeo, plancherMaterial);
-            plancher.position.set(objetData.planX, objetData.planY, objetData.planZ!);
+            plancher.position.set(maisonData.plancher.planX, maisonData.plancher.planY, maisonData.plancher.planZ!);
             
             return plancher;
         }

@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
-import { objets } from './maisondonnees';
+import { maison } from './maisondonnees';
 import { murService } from './services/murs.service';
 import { planService } from './services/plancher.service';
 import { solService } from './services/sol.service';
@@ -36,54 +36,19 @@ export class AppComponent implements AfterViewInit {
     const camera = this.sceneService.getCamera();
 
     //ajout des murs à l'aide du murService
-    const objetData = objets[0];
+    const maisonData = maison;
 
-    const mur1Data = {
-      ...objetData,
-      murX: objetData.mur1X,
-      murY: objetData.mur1Y,
-      murZ: objetData.mur1Z,
-    };
-
-    this.murService.murFen(mur1Data);
+    maison.murs.forEach((murData) => {
+      this.murService.mur(murData);
+    });
     scene.add(this.murService.gethouseGroup());
-
-    const mur2Data = {
-      ...objetData,
-      murX: objetData.mur2X,
-      murY: objetData.mur2Y,
-      murZ: objetData.mur2Z,
-    };
-
-    this.murService.murPorte(mur2Data);
-    scene.add(this.murService.gethouseGroup());
-
-    const mur3Data = {
-      ...objetData,
-      murX: objetData.mur3X,
-      murY: objetData.mur3Y,
-      murZ: objetData.mur3Z,
-    };
-
-    this.murService.murFen(mur3Data);
-    scene.add(this.murService.gethouseGroup());
-
-    const mur4Data = {
-      ...objetData,
-      murX: objetData.mur4X,
-      murY: objetData.mur4Y,
-      murZ: objetData.mur4Z,
-    };
-
-    this.murService.mur(mur4Data);
-    scene.add(this.murService.gethouseGroup());
-
+    
     //plancher
-    const plancher = this.planService.plancher(objetData);
+    const plancher = this.planService.plancher(maisonData);
     scene.add(plancher)
 
     //création sol & plancher
-    const sol = this.solService.sol(objetData);
+    const sol = this.solService.sol(maisonData);
     scene.add(sol)
 
     //paramètres du rendu

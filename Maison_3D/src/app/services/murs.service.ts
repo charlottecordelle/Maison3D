@@ -15,67 +15,69 @@ export class murService {
         return this.houseGroup;
     }
 
-    murFen(objetData: any): THREE.Group {
-        const trouGeo = new THREE.BoxGeometry(objetData.fenlargeur, objetData.fenlongueur, objetData.largeur);
-        const trou = new THREE.Mesh(trouGeo);
-        trou.position.set(objetData.murX, objetData.murY, objetData.murZ)
-
-        const murGeo = new THREE.BoxGeometry(objetData.longueur1, objetData.hauteur, objetData.largeur);
-        const murMaterial = new THREE.MeshStandardMaterial({ color: objetData.colormur });
+    //murs avec fenetre
+    mur(maisonData: any): THREE.Group {
+        const murGeo = new THREE.BoxGeometry(maisonData.longueur1 ?? maisonData.longueur2, maisonData.hauteur, maisonData.largeur);
+        const murMaterial = new THREE.MeshStandardMaterial({ color: maisonData.colorMur });
         const mur = new THREE.Mesh(murGeo, murMaterial);
-        mur.position.set(objetData.murX, objetData.murY, objetData.murZ);
+        mur.position.set(maisonData.murX, maisonData.murY, maisonData.murZ);
+        if (maisonData.longueur2) {
+            mur.rotation.y = Math.PI / 2;
+        }
+        mur.updateMatrix();
+        
+        let murCSG = CSG.fromMesh(mur);
 
-        const murCSG = CSG.fromMesh(mur);
-        const trouCSG = CSG.fromMesh(trou);
-        const murtrouCSG = murCSG.subtract(trouCSG);
-        const murtrou = CSG.toMesh(murtrouCSG, mur.matrix, mur.material);
-        murtrou.position.copy(mur.position);
-        this.houseGroup.add(murtrou)
+        if (maisonData.fenetresMur){
+            maisonData.fenetresMur.forEach((fen: any) => {
+                const trouGeo = new THREE.BoxGeometry(fen.fenLargeur, fen.fenLongueur, maisonData.largeur);
+                const trou = new THREE.Mesh(trouGeo);
+                trou.position.set(fen.fenX, fen.fenY, fen.fenZ);
+                if (maisonData.longueur2) {
+                    trou.rotation.y = Math.PI / 2;
+                }
+                trou.updateMatrix();
 
-        const fenGeo = new THREE.BoxGeometry(objetData.fenlargeur, objetData.fenlongueur, objetData.fenepaisseur);
-        const fenMaterial = new THREE.MeshBasicMaterial({ color: objetData.colorfen});
-        const fen = new THREE.Mesh(fenGeo, fenMaterial);
+                murCSG = murCSG.subtract(CSG.fromMesh(trou));
 
-        fen.position.copy(trou.position);
-        this.houseGroup.add(fen)
+                const fenetreGeo = new THREE.BoxGeometry(fen.fenLargeur, fen.fenLongueur, fen.fenEpaisseur);
+                const fenetreMaterial = new THREE.MeshBasicMaterial({ color: fen.colorFen});
+                const fenetre = new THREE.Mesh(fenetreGeo, fenetreMaterial);
+                fenetre.position.set(fen.fenX, fen.fenY, fen.fenZ)
+                if (maisonData.longueur2) {
+                    fenetre.rotation.y = Math.PI / 2;
+                }
+                this.houseGroup.add(fenetre)
+            });
+        }
+
+        if (maisonData.porte){
+            maisonData.porte.forEach((Porte: any) => {
+                const trouPGeo = new THREE.BoxGeometry(Porte.porteLargeur, Porte.porteHauteur, maisonData.largeur);
+                const trouP = new THREE.Mesh(trouPGeo);
+                trouP.position.set(Porte.porteX, Porte.porteY, Porte.porteZ);
+                if (maisonData.longueur2) {
+                    trouP.rotation.y = Math.PI / 2;
+                }
+                trouP.updateMatrix();
+
+                murCSG = murCSG.subtract(CSG.fromMesh(trouP));
+
+                const porteGeo = new THREE.BoxGeometry(Porte.porteLargeur, Porte.porteHauteur, Porte.porteEpaisseur);
+                const porteMaterial = new THREE.MeshBasicMaterial({ color: Porte.colorPorte});
+                const porte = new THREE.Mesh(porteGeo, porteMaterial);
+                porte.position.set(Porte.porteX, Porte.porteY, Porte.porteZ)
+                if (maisonData.longueur2) {
+                    porte.rotation.y = Math.PI / 2;
+                }
+                this.houseGroup.add(porte)
+            });
+        }
+
+        const murFinal = CSG.toMesh(murCSG, mur.matrix, mur.material);
+        murFinal.position.copy(mur.position);
+        this.houseGroup.add(murFinal);
 
         return this.houseGroup;
-    }
-
-    murPorte(objetData: any): THREE.Group {
-        const trouGeo = new THREE.BoxGeometry(objetData.largeur, objetData.portehauteur, objetData.portelargeur);
-        const trou = new THREE.Mesh(trouGeo);
-        trou.position.set(objetData.murX, objetData.murY, objetData.murZ);
-
-        const murGeo = new THREE.BoxGeometry(objetData.largeur, objetData.hauteur, objetData.longueur2);
-        const murMaterial = new THREE.MeshStandardMaterial({ color: objetData.colormur })
-        const mur = new THREE.Mesh(murGeo, murMaterial);
-        mur.position.set(objetData.murX, objetData.murY, objetData.murZ);
-
-        const murCSG = CSG.fromMesh(mur);
-        const trouCSG = CSG.fromMesh(trou);
-        const murtrouCSG = murCSG.subtract(trouCSG);
-        const murtrou = CSG.toMesh(murtrouCSG, mur.matrix, mur.material);
-        murtrou.position.copy(mur.position);
-        this.houseGroup.add(murtrou)
-
-        const porteGeo = new THREE.BoxGeometry(objetData.portepaisseur, objetData.portehauteur, objetData.portelargeur);
-        const porteMaterial = new THREE.MeshBasicMaterial({ color: objetData.colorporte});
-        const porte = new THREE.Mesh(porteGeo, porteMaterial);
-
-        porte.position.copy(trou.position);
-        this.houseGroup.add(porte)
-
-        return this.houseGroup
-    }
-
-    mur(objetData: any): THREE.Group {
-        const murGeo = new THREE.BoxGeometry(objetData.largeur, objetData.hauteur, objetData.longueur2);
-        const murMaterial = new THREE.MeshStandardMaterial({ color: objetData.colormur });
-        const mur = new THREE.Mesh(murGeo, murMaterial);
-        mur.position.set(objetData.murX, objetData.murY, objetData.murZ);
-        this.houseGroup.add(mur)
-
-        return this.houseGroup
     }
 }
