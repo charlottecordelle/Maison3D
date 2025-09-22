@@ -16,6 +16,7 @@ import { sceneService } from './services/scene.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements AfterViewInit {
+  //Récupération du canvas depuis le HTML
   @ViewChild('myCanva', { static: true }) myCanva!: ElementRef<HTMLCanvasElement>;
 
   constructor(
@@ -26,45 +27,45 @@ export class AppComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit() {
-    //récupération du canva dans HTML
+    //Initialisation et dimensions du canvas
     const canvas = this.myCanva.nativeElement;
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
 
-    //récupération de la scène et de la caméra
+    //Récupération de la scène et de la caméra depuis le sceneService
     const scene = this.sceneService.getScene();
     const camera = this.sceneService.getCamera();
 
-    //ajout des murs à l'aide du murService
+    //Ajout des murs avec le murService
     const maisonData = maison;
 
     maison.murs.forEach((murData) => {
-      this.murService.mur(murData);
+      this.murService.mur(murData); //Ici on génère chaque mur et l'ajoute au groupe
     });
-    scene.add(this.murService.gethouseGroup());
+    scene.add(this.murService.gethouseGroup()); //Ajout du groupe de murs à la scène
     
-    //plancher
+    //Ajout du plancher avec planService
     const plancher = this.planService.plancher(maisonData);
     scene.add(plancher)
 
-    //création sol & plancher
+    //Ajout du sol avec solService
     const sol = this.solService.sol(maisonData);
     scene.add(sol)
 
-    //paramètres du rendu
+    //Paramètres du renderer
     const renderer = new THREE.WebGLRenderer({ canvas: this.myCanva.nativeElement, antialias: true });
-    renderer.setSize(width, height);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.setSize(width, height); //Adapter la taille du rendu à celle du canvas
+    renderer.shadowMap.enabled = true; //Ajout des ombres
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; //Ajout des ombres douces
 
-    //contrôles de la scène
+    //Contrôles de la scène
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
 
-    //réinitialiser la position de la caméra à l'aide d'un bouton
+    //Fonction pour réinitialiser la position de la caméra à l'aide d'un bouton
     function resetcamera() {
-      camera.position.set(10, 10, 10);
-      controls.target.set(0, 0, 0);
+      camera.position.set(10, 10, 10); //Position de la caméra par défaut
+      controls.target.set(0, 0, 0); //Cible (centre de la scène)
       controls.update();
     }
 
@@ -72,12 +73,12 @@ export class AppComponent implements AfterViewInit {
       resetcamera();
     });
 
-    //animer le rendu
+    //Animation du rendu avec une boucle
     const animate = () => {
-      requestAnimationFrame(animate);
-      controls.update();
-      renderer.render(scene, camera);
+      requestAnimationFrame(animate); //Relance en continu
+      controls.update(); //Met à jour les mouvements de la caméra
+      renderer.render(scene, camera); //Affiche la scène
     };
-    animate();
+    animate(); //Lance l'animation
   }
 }
