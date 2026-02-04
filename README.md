@@ -21,8 +21,10 @@ Accès : http://localhost:4200
 ---
 ## Utilisation
 
+```bash
 Tourner la caméra : cliquer et glisser avec la souris
 Zoomer : molette de la souris
 Déplacer la caméra : clic droit + glisser
 Observer les animations en temps réel dans la maison
 L’interface permet de mettre en avant différents éléments de la maison selon les interactions
+```
